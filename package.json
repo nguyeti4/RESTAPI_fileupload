@@ -1,0 +1,36 @@
+{
+  "name": "template-assignment-4",
+  "version": "1.2.0",
+  "description": "A small business review API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "initdb": "node initDb.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osu-cs493-sp22/template-assignment-4.git"
+  },
+  "author": "Hess <hessro@oregonstate.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/osu-cs493-sp22/template-assignment-4/issues"
+  },
+  "homepage": "https://github.com/osu-cs493-sp22/template-assignment-4#readme",
+  "dependencies": {
+    "@tensorflow-models/mobilenet": "^2.1.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "amqplib": "^0.9.1",
+    "express": "^4.18.1",
+    "jimp": "^0.16.1",
+    "mongodb": "^4.6.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4-lts.1",
+    "sharp": "^0.30.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

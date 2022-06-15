@@ -1,0 +1,68 @@
+services:
+  db:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+
+  db-init:
+    build: .
+    environment:
+      MONGO_HOST: db
+      MONGO_USER: ${MONGO_ROOT_USER}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      MONGO_AUTH_DB_NAME: admin
+      MONGO_CREATE_USER: ${MONGO_USER}
+      MONGO_CREATE_PASSWORD: ${MONGO_PASSWORD}
+    depends_on:
+      - db
+    restart: on-failure
+    command: npm run initdb
+
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - db
+      - db-init
+      - api
+    restart: on-failure
+
+  api:
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      MONGO_HOST: db
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - db
+      - db-init
+    restart: on-failure
+
+  consumer:
+    build: .
+    depends_on:
+      - db
+      - db-init
+      - api
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      MONGO_HOST: db
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+    restart: on-failure
+    command: node classifyWorker.js
+
